@@ -1,31 +1,39 @@
-package com.example.demo.user;
+package bdo_demo.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
-public class UserEntry {
+@Table(name = "users")
+public class User {
 
     @Id
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "password")
     private String password;
 
-    public UserEntry() {}
-
-    public UserEntry(Integer id, String name, String email, String password) {
+    public User(Long id, String name, String email, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
     }
 
-    public Integer getId() {
+    public User() {
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
