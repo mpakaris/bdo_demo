@@ -1,6 +1,7 @@
 package bdo_demo.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
@@ -9,6 +10,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping
     public List<User> getAllUsers() {
@@ -22,7 +26,13 @@ public class UserController {
 
     @PostMapping
     public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        User newUser = new User();
+        newUser.setName(user.getName());
+        newUser.setEmail(user.getEmail());
+        newUser.setPassword(encodedPassword);
+        newUser.setAddress(user.getAddress());
+        return userRepository.save(newUser);
     }
 
     @PutMapping("/{id}")
