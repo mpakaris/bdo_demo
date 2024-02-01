@@ -1,9 +1,26 @@
+version: '3.9'
 services:
-  postgres:
-    image: 'postgres:latest'
+  postgresql:
+    image: docker.io/bitnami/postgresql:latest
+    restart: on-failure
     environment:
-      - 'POSTGRES_DB=postgres'
-      - 'POSTGRES_PASSWORD=postgres'
-      - 'POSTGRES_USER=postgres'
+      - POSTGRESQL_PASSWORD=postgres
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_DATABASE=postgres
+    volumes:
+      - './postgresql_data:/bitnami/'
     ports:
-      - '5432'
+      - "5432:5432"
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: on-failure
+    environment:
+      PGADMIN_DEFAULT_EMAIL: postgres@admin.com
+      PGADMIN_DEFAULT_PASSWORD: postgres
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgresql
+volumes:
+  postgresql_data:
+    driver: local

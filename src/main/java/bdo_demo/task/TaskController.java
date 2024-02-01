@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/tasks")
 public class TaskController {
 
@@ -30,6 +31,7 @@ public class TaskController {
         Task existingTask = taskRepository.findById(id).get();
         existingTask.setTitle(task.getTitle());
         existingTask.setDescription(task.getDescription());
+        existingTask.setUserId(task.getUserId());
         return taskRepository.save(existingTask);
     }
 
