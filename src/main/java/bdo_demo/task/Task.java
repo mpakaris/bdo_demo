@@ -1,9 +1,13 @@
 package bdo_demo.task;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name="tasks")
+@SQLDelete(sql = "UPDATE tasks SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,6 +21,8 @@ public class Task {
 
     @Column(name="assignee")
     private Long userId;
+    @Column(name="deleted")
+    private boolean deleted = Boolean.FALSE;
 
     public Task(){}
 
@@ -57,5 +63,13 @@ public class Task {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

@@ -1,9 +1,13 @@
 package bdo_demo.user;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "users")
+@SQLDelete(sql = "UPDATE users SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -14,6 +18,9 @@ public class User {
     private String email;
     @Column(name = "password")
     private String password;
+
+    @Column(name="deleted")
+    private boolean deleted = Boolean.FALSE;
     @Embedded
     @AttributeOverrides({
             @AttributeOverride( name = "cityName", column = @Column(name = "address_cityName")),
@@ -55,4 +62,12 @@ public class User {
     public void setPassword(String password) { this.password = password; }
     public Address getAddress() { return address; }
     public void setAddress(Address address) { this.address = address; }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }
