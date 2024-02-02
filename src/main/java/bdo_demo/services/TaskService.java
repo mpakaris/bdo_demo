@@ -26,9 +26,9 @@ public class TaskService {
 
     @Transactional
     public Task createTask(Long userId, Task task) {
-        User user = userService.getUserById(userId); // Fetch the user by their ID using userService
-        task.setUser(user); // Set the user for the task
-        return taskRepository.save(task); // Save the task with the assigned user
+        User user = userService.getUserById(userId);
+        task.setUser(user);
+        return taskRepository.save(task);
     }
 
     @Transactional(readOnly = true)
@@ -51,40 +51,26 @@ public class TaskService {
         // Fetch the existing task from the database
         Task existingTask = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + taskId));
-
-        // Check if the updatedTask has a new userId
         if (updatedTask.getUser() != null) {
-            // You can validate the userId here if needed
             User newUser = userRepository.findById(updatedTask.getUser().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + updatedTask.getUser().getId()));
 
-            // Remove the task from the current user's tasks list
             existingTask.getUser().getTasks().remove(existingTask);
-
-            // Update the task's user to the new user
             existingTask.setUser(newUser);
-
-            // Add the task to the new user's tasks list
             newUser.getTasks().add(existingTask);
         }
-
-        // Update the task's title and description
         if (updatedTask.getTaskTitle() != null) {
             existingTask.setTaskTitle(updatedTask.getTaskTitle());
         }
-
         if (updatedTask.getTaskDescription() != null) {
             existingTask.setTaskDescription(updatedTask.getTaskDescription());
         }
-
-        // Save the updated task
         return taskRepository.save(existingTask);
     }
 
     @Transactional
     public void deleteTask(Long taskId) {
         Task task = getTaskById(taskId);
-        // Soft delete the task
         task.setDeleted(true);
         taskRepository.save(task);
     }

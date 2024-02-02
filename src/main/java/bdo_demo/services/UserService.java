@@ -8,7 +8,6 @@ import bdo_demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -41,14 +40,13 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User getUserById(Long userId) {
-        return (User) userRepository.findByIdAndDeletedIsFalse(userId)
+        return userRepository.findByIdAndDeletedIsFalse(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
     }
 
     @Transactional
     public User updateUser(Long userId, User updatedUser) {
         User user = getUserById(userId);
-        // Update user fields here
         user.setName(updatedUser.getName());
         user.setEmail(updatedUser.getEmail());
         user.setAddress(updatedUser.getAddress());
@@ -58,15 +56,11 @@ public class UserService {
 
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId).get();
-        // Soft delete all associated tasks
         for (Task task : user.getTasks()) {
             task.setDeleted(true);
-            // Save the task to mark it as "deleted" in the database
             taskRepository.save(task);
         }
-        // Soft delete the user
         user.setDeleted(true);
-
         userRepository.save(user);
     }
 }

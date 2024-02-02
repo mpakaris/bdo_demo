@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Where;
-
 import java.util.List;
 
 @Data
@@ -22,7 +21,6 @@ public class User {
     private Address address;
     private String passwordHash;
     private boolean deleted = false;
-
     @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.EAGER)
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @JsonIgnoreProperties("user")

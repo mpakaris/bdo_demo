@@ -14,15 +14,12 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String taskTitle;
     private String taskDescription;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @Cascade(org.hibernate.annotations.CascadeType.PERSIST)
     @JsonIgnoreProperties("tasks")
     private User user;
-
     private boolean deleted = false;
 }
