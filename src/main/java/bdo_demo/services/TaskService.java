@@ -2,7 +2,6 @@ package bdo_demo.services;
 
 import bdo_demo.entities.Task;
 import bdo_demo.entities.User;
-import bdo_demo.entitiesDTO.TaskDTO;
 import bdo_demo.exceptions.ResourceNotFoundException;
 import bdo_demo.repository.TaskRepository;
 import bdo_demo.repository.UserRepository;
