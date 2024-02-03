@@ -27,6 +27,9 @@ public class TaskService {
     @Transactional
     public Task createTask(Long userId, Task task) {
         User user = userService.getUserById(userId);
+        if (user == null || user.isDeleted()) {
+            throw new ResourceNotFoundException("User with ID " + userId + " does not exist or is not active.");
+        }
         task.setUser(user);
         return taskRepository.save(task);
     }
