@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -39,14 +38,9 @@ public class TaskService {
         return taskRepository.findByDeletedIsFalse();
     }
 
-    @Transactional(readOnly = true)
     public Task getTaskById(Long taskId) {
-        Optional<Task> taskOptional = taskRepository.findByIdAndDeletedIsFalse(taskId);
-        if (taskOptional.isPresent()) {
-            return taskOptional.get();
-        } else {
-            throw new ResourceNotFoundException("Task not found with id: " + taskId);
-        }
+        return taskRepository.findByIdAndDeletedIsFalse(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + taskId));
     }
 
     @Transactional

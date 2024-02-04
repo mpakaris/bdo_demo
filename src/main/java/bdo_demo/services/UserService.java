@@ -15,7 +15,6 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
-
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -34,7 +33,8 @@ public class UserService {
 
     @Transactional
     public Task createTaskForUser(Long userId, Task task) {
-        User user = getUserById(userId);
+        User user = userRepository.findByIdAndDeletedIsFalse(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
         task.setUser(user);
         return taskRepository.save(task);
     }
@@ -52,19 +52,22 @@ public class UserService {
 
     @Transactional
     public User updateUser(Long userId, User updatedUser) {
-        User user = getUserById(userId);
+        User user = userRepository.findByIdAndDeletedIsFalse(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
         user.setName(updatedUser.getName());
         user.setEmail(updatedUser.getEmail());
         user.setAddress(updatedUser.getAddress());
         return userRepository.save(user);
     }
 
+    @Transactional
     public void deleteUser(Long userId) {
-        User user = userRepository.findById(userId).get();
-        for (Task task : user.getTasks()) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for ID: " + userId));
+        user.getTasks().forEach(task -> {
             task.setDeleted(true);
             taskRepository.save(task);
-        }
+        });
         user.setDeleted(true);
         userRepository.save(user);
     }
