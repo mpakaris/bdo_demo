@@ -45,7 +45,6 @@ public class TaskService {
 
     @Transactional
     public Task updateTask(Long taskId, Task updatedTask) {
-        // Fetch the existing task from the database
         Task existingTask = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + taskId));
         if (updatedTask.getUser() != null) {
